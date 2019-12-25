@@ -1,90 +1,94 @@
-import re
-import unittest
 import textwrap
-import markdown
+
+import pytest
+from markdown import Markdown
+
 import mkdcomments
 
 
-class TestComments(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        comments = mkdcomments.CommentsExtension()
-        cls.markdowner = markdown.Markdown(extensions=[comments])
+@pytest.fixture
+def markdowner() -> Markdown:
+    comments = mkdcomments.CommentsExtension()
+    return Markdown(extensions=[comments])
 
-    def assertExpectedMarkdown(self, md_input, expected_output):
-        output = self.markdowner.convert(textwrap.dedent(md_input))
-        expected = textwrap.dedent(expected_output)
 
-        try:
-            self.assertEqual(output, expected)
-        except AssertionError as e:
-            raise AssertionError('\n' + re.sub("' != '", '\n!=\n', e.message))
+@pytest.mark.parametrize(
+    "md_input,expected",
+    [
+        (
+                # Inline
+                "text <!---inline comment-->",
+                "<p>text</p>"),
+        (
+                # Inline beginning and end
+                "<!---inline comment-->text<!---inline comment-->",
+                "<p>text</p>"),
+        (
+                # Full line
+                """\
+text
+<!---this line is ommitted entirely-->
+more text""",
+                """\
+<p>text</p>
+<p>more text</p>"""
+        ),
+        (
+                # Multiline
+                """\
+text  <!---multiline comment
+multiline comment
+multiline comment-->more text""",
+                """\
+<p>text</p>
+<p>more text</p>"""
+        ),
+        (
+                # Multiline beginning inline
+                """\
+<!---inline comment-->text<!---multiline commment
+multiline comment-->
+more text""",
+                """\
+<p>text</p>
+<p>more text</p>"""
+        ),
+        (
+                # Multiline ending inline
+                """\
+<!---multiline comment
+multiline comment-->text<!---inline comment-->""",
+                "<p>text</p>"
+        ),
+        (
+                # Multiline ending and beginning on same line
+                """\
+<!---multiline comment
+multiline comment-->text<!---multiline comment
+multiline comment-->
+more text
+""",
+                """\
+<p>text</p>
+<p>more text</p>"""
+        ),
+        (
+                # Comments in HTML
+                """\
+<pre>
+    <!--- test --> testing code blocks
+        <!--- test --> testing 8 spaces
+     <!--- test --> testing 5 spaces
+</pre>""",
+                """\
+<pre>
+    <!--- test --> testing code blocks
+        <!--- test --> testing 8 spaces
+     <!--- test --> testing 5 spaces
+</pre>"""
 
-    def test_inline(self):
-        md_input = 'text <!---inline comment-->'
-        self.assertExpectedMarkdown(md_input, '<p>text</p>')
-
-    def test_inline_beginning_and_end(self):
-        md_input = '<!---inline comment-->text<!---inline comment-->'
-        self.assertExpectedMarkdown(md_input, '<p>text</p>')
-
-    def test_full_line(self):
-        md_input = """\
-            text
-            <!---this line is ommitted entirely-->
-            more text"""
-        expected_result = """\
-            <p>text</p>
-            <p>more text</p>"""
-        self.assertExpectedMarkdown(md_input, expected_result)
-
-    def test_multiline(self):
-        md_input = """\
-            text  <!---multiline comment
-            multiline comment
-            multiline comment-->more text"""
-        expected_result = """\
-            <p>text</p>
-            <p>more text</p>"""
-        self.assertExpectedMarkdown(md_input, expected_result)
-
-    def test_multiline_beginning_inline(self):
-        md_input = """\
-            <!---inline comment-->text<!---multiline commment
-            multiline comment-->
-            more text"""
-        expected_result = """\
-            <p>text</p>
-            <p>more text</p>"""
-        self.assertExpectedMarkdown(md_input, expected_result)
-
-    def test_multiline_ending_inline(self):
-        md_input = """\
-            <!---multiline comment
-            multiline comment-->text<!---inline comment-->"""
-        self.assertExpectedMarkdown(md_input, '<p>text</p>')
-
-    def test_multiline_ending_and_beginning_on_same_line(self):
-        md_input = """\
-            <!---multiline comment
-            multiline comment-->text<!---multiline comment
-            multiline comment-->
-            more text
-            """
-        expected_result = """\
-            <p>text</p>
-            <p>more text</p>"""
-        self.assertExpectedMarkdown(md_input, expected_result)
-
-    def test_comments_in_html(self):
-        """ See issue #2. """
-        md_input = """\
-            <pre>
-                <!--- test --> testing code blocks
-                    <!--- test --> testing 8 spaces
-                 <!--- test --> testing 5 spaces
-            </pre>"""
-        self.assertExpectedMarkdown(md_input, md_input)
-
-if __name__ == '__main__':
-    unittest.main()
+        )
+    ]
+)
+def test_mkdcomments(md_input, expected, markdowner):
+    assert textwrap.dedent(markdowner.convert(md_input)) == textwrap.dedent(expected)

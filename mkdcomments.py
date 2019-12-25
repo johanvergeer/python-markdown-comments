@@ -3,12 +3,11 @@ from markdown.preprocessors import Preprocessor
 from markdown.postprocessors import Postprocessor
 from markdown.extensions import Extension
 
-
 PREFIX_PLACEHOLDER = "OMtxTKldR2f1LZ5Q"
 
 
 class CommentsExtension(Extension):
-    def extendMarkdown(self, md, md_globals):
+    def extendMarkdown(self, md):
         md.registerExtension(self)
         md.preprocessors.add(
             "comment_munger", CommentMunger(md), "<html_block")
@@ -53,7 +52,7 @@ class CommentRemover(Preprocessor):
 
         # continue multiline
         else:
-            return ('', True)
+            return '', True
 
 
 class RawCommentReplacer(Postprocessor):
@@ -61,5 +60,5 @@ class RawCommentReplacer(Postprocessor):
         return re.sub(PREFIX_PLACEHOLDER, '<!---', text)
 
 
-def makeExtension(configs={}):
-    return CommentsExtension(configs=configs)
+def makeExtension(**kwargs):
+    return CommentsExtension(**kwargs)
