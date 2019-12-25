@@ -21,8 +21,9 @@ Example
 -------
 ```python
 >>> import markdown
->>> import mkdcomments
->>> comments = mkdcomments.CommentsExtension()
+>>>
+from markdown.extensions.comments import CommentsExtension
+>>> comments = CommentsExtension()
 >>> markdowner = markdown.Markdown(extensions=[comments])
 >>> markdowner.convert("""\
 ... blah blah blah  <!--- inline comment -->
