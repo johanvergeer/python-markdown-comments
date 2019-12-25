@@ -1,6 +1,8 @@
 mkdcomments
 ===========
 
+Original plugin was created by [ryneeverett](https://github.com/ryneeverett/python-markdown-comments).
+
 A [Python-Markdown](https://github.com/waylan/Python-Markdown) preprocessor extension to ignore html comments opened by three dashes and any whitespace prior to them. I believe pandoc has similar functionality.
 
 ```html
@@ -12,7 +14,7 @@ Installation
 ------------
 
 ```sh
-pip install git+https://github.com/ryneeverett/python-markdown-comments.git
+pip install git+https://github.com/johanvergeer/python-markdown-comments.git
 ```
 
 Example
