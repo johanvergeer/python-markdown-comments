@@ -14,7 +14,7 @@ Installation
 ------------
 
 ```sh
-pip install git+https://github.com/johanvergeer/python-markdown-comments.git
+pip install markdown-comments
 ```
 
 Example
