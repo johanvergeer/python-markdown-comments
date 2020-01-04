@@ -14,7 +14,7 @@ Installation
 ------------
 
 ```sh
-pip install markdown-comments
+pip install python-markdown-comments
 ```
 
 Example
