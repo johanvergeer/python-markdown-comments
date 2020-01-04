@@ -21,8 +21,7 @@ Example
 -------
 ```python
 >>> import markdown
->>>
-from markdown.extensions.comments import CommentsExtension
+>>> from python_markdown_comments import CommentsExtension
 >>> comments = CommentsExtension()
 >>> markdowner = markdown.Markdown(extensions=[comments])
 >>> markdowner.convert("""\

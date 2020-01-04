@@ -1,9 +1,8 @@
 import textwrap
 
-import pytest
 from markdown import Markdown
-
-from .comments import CommentsExtension
+import pytest
+from python_markdown_comments import CommentsExtension
 
 
 @pytest.fixture

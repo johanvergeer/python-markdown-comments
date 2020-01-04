@@ -1,15 +1,12 @@
 [tool.poetry]
 name = "python-markdown-comments"
-version = "1.0.0"
+version = "1.1.0"
 description = "A Python-Markdown extension to ignore html comments opened by three dashes."
 authors = ["Johan Vergeer <johanvergeer@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 keywords = ["markdown","extensions","comments"]
 repository = "https://github.com/johanvergeer/python-markdown-comments"
-packages = [
-    { include = "markdown" },
-]
 
 classifiers = [
     "Development Status :: 5 - Production/Stable",
